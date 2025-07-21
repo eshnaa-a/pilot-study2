@@ -192,7 +192,8 @@ blockOrder.forEach(blockKey => {
         on_finish: () => {
           if(index === imageQuestions.length - 1){
             progressCounter++;
-            jsPsych.progressBar.setProgress(progressCounter / totalProgressSteps);
+            console.log("Progress updated for image trial. ProgressCounter:", progressCounter);
+            jsPsych.setProgressBar(progressCounter / totalProgressSteps);
           }
         }
       });
@@ -286,7 +287,8 @@ blockOrder.forEach(blockKey => {
         },
         on_finish: () => {
           progressCounter++;
-          jsPsych.progressBar.setProgress(progressCounter / totalProgressSteps);
+          console.log("Progress updated for audio trial. ProgressCounter:", progressCounter);
+          jsPsych.setProgressBar(progressCounter / totalProgressSteps);
         }
       });
     });
