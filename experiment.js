@@ -11,6 +11,20 @@ const jsPsych = initJsPsych({
   }
 });
 
+function createEndOfBlockScreen(blockNumber) {
+  return {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="text-align: center; padding: 40px;">
+        <h2 style="color: #333;">End of Block ${blockNumber.toUpperCase()}</h2>
+        <p>You have completed this section.</p>
+        <p><strong>Press SPACE to continue.</strong></p>
+      </div>
+    `,
+    choices: [' ']
+  };
+}
+
 const group = jsPsych.randomization.sampleWithoutReplacement(["male", "female"], 1)[0];
 const participantID = jsPsych.data.getURLVariable("id") || Math.floor(Math.random() * 10000);
 jsPsych.data.addProperties({ participantID: participantID });
@@ -54,9 +68,9 @@ const instructions = {
   stimulus: `
     <h2>Welcome to the experiment</h2>
     <p>In this study, you will complete a series of tasks involving <strong>images</strong> and <strong>audio clips</strong>.</p>
-    <p><strong>There will be 3 blocks in total.</strong> In each block, you'll first see image pairs and answer 4 questions about each pair, followed by audio pairs with 4 questions per pair.</p>
-    <p><strong>You will use the number keys (1 or 2)</strong> to respond.</p>
-    <p>Before you being, please ensure you're in a quiet space.</p>
+    <p>There will be 3 blocks in total. In each block, you'll first see image pairs and answer 5 questions about each pair, followed by audio pairs with 6 questions per pair.</p>
+    <p>You will use the number keys (1 or 2) to respond.</p>
+    <p>Before you begin, please ensure you're in a quiet space.</p>
     <p><em>Press the spacebar to view examples of the image and audio pairs before you begin the actual experiment.</em></p>
   `,
   choices: [' ']
@@ -108,11 +122,23 @@ const exampleAudioTrial = {
 
 let timeline = [consent, instructions, exampleImageTrial, exampleAudioTrial];
 
+const preExperimentInstructions = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
+    <p>You will now start the actual experiment.</p>
+    <p>Remember to use the number keys (1 or 2) to respond to each question.</p>
+    <p>Make sure you're in a quiet space and give each question your full attention.</p>
+    <p><strong>Press the spacebar to begin the first block.</strong></p>
+  `,
+  choices: [' ']
+};
+
 blockOrder.forEach(blockKey => {
   const faceNums = imageBlocks[blockKey];
   const audioNums = audioBlocks[blockKey];
 
   let imageComparisons = [];
+
   faceNums.forEach(faceNum => {
     const faceID = faceNum.toString().padStart(2, "0");
     facePairs.forEach(([v1, v2]) => {
@@ -130,7 +156,7 @@ blockOrder.forEach(blockKey => {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: `
           <p style='font-size:12px;'>BLOCK: ${blockKey.toUpperCase()} (Image)</p>
-          <p><b>Review both images and answer the question below:</b></p>
+          <p><b>Please review both images and answer the question below:</b></p>
 	  <div style='display:flex; justify-content:space-around; align-items: center;'>
            <div style='text-align: center;'>
             <p><strong>Image 1</strong></p>
@@ -142,7 +168,7 @@ blockOrder.forEach(blockKey => {
            </div>
           </div>
           <p><strong>${question}</strong></p>
-          <p>Press 1 for the left image or 2 for the right image.</p>
+          <p>Press 1 for Image 1 or 2 for Image 2.</p>
         `,
         choices: ['1', '2'],
         data: {
@@ -171,7 +197,7 @@ blockOrder.forEach(blockKey => {
         stimulus: `
           <div style="text-align:center;">
             <p style="font-size:12px;">BLOCK: ${blockKey.toUpperCase()} (Audio)</p>
-            <p><strong>Please listen to each audio recording carefully. You will answer 4 questions about the audio pairs after they finish playing.</strong></p>
+            <p><strong>Please listen to each audio recording carefully. After they finish playing, answer the following questions.</strong></p>
 
             <div style="display: flex; justify-content: center; gap: 50px;">
               <div style="text-align: center;">
@@ -236,7 +262,7 @@ blockOrder.forEach(blockKey => {
 
           const checkReady = () => {
             if (done1 && done2) {
-              instr.innerHTML = "You may now begin answering. Press 1 for the left audio or 2 for the right audio.";
+              instr.innerHTML = "You may now answer the questions. Press 1 for Audio 1 or 2 for Audio 2.";
               showNextQuestion();
             }
           };
@@ -248,6 +274,8 @@ blockOrder.forEach(blockKey => {
     });
   });
   timeline.push(...jsPsych.randomization.shuffle(audioTrials));
+
+  timeline.push(createEndOfBlockScreen(blockKey));
 });
 
 timeline.push({
