@@ -180,7 +180,6 @@ blockOrder.forEach(blockKey => {
           face_number: face_number,
           group: group,
           block: blockKey
-          }
         }
       });
     });
