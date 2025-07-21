@@ -1,6 +1,6 @@
 const jsPsych = initJsPsych({
   show_progress_bar: true,
-  auto_update_progress_bar: true,
+  auto_update_progress_bar: false,
   on_data_update: () => {
     fetch("https://script.google.com/macros/s/AKfycbz2P_LTypos__22szkVspBsprpYj-lTIcy9lfNNtauVWDxZle2SytAo8vbGwfLatvn9/exec", {
       method: "POST",
@@ -68,7 +68,7 @@ const instructions = {
   stimulus: `
     <h2>Welcome to the experiment</h2>
     <p>In this study, you will complete a series of tasks involving <strong>images</strong> and <strong>audio clips</strong>.</p>
-    <p>There will be 3 blocks in total. In each block, you'll first see image pairs and answer 5 questions about each pair, followed by audio pairs with 6 questions per pair.</p>
+    <p>There will be 3 blocks in total, Blocks A, B, and C (presented randomly). In each block, you'll first see image pairs and answer 5 questions about each pair, followed by audio pairs with 6 questions per pair.</p>
     <p>You will use the number keys (1 or 2) to respond.</p>
     <p>Before you begin, please ensure you're in a quiet space.</p>
     <p><em>Press the spacebar to view examples of the image and audio pairs before you begin the actual experiment.</em></p>
@@ -120,8 +120,6 @@ const exampleAudioTrial = {
   choices: [' ']
 };
 
-let timeline = [consent, instructions, exampleImageTrial, exampleAudioTrial];
-
 const preExperimentInstructions = {
   type: jsPsychHtmlKeyboardResponse,
   stimulus: `
@@ -132,6 +130,16 @@ const preExperimentInstructions = {
   `,
   choices: [' ']
 };
+
+const totalImagePairs = Object.values(imageBlocks).reduce((sum, arr) => sum + arr.length * facePairs.length, 0);
+
+const totalAudioTrials = Object.values(audioBlocks).reduce((sum, arr) => sum + arr.length * audioPairs.length, 0);
+
+const totalProgressSteps = totalImagePairs + totalAudioTrials;
+
+let progressCounter = 0;
+
+let timeline = [consent, instructions, exampleImageTrial, exampleAudioTrial, preExperimentInstructions];
 
 blockOrder.forEach(blockKey => {
   const faceNums = imageBlocks[blockKey];
@@ -180,6 +188,12 @@ blockOrder.forEach(blockKey => {
           face_number: face_number,
           group: group,
           block: blockKey
+        },
+        on_finish: () => {
+          if(index === imageQuestions.length - 1){
+            progressCounter++;
+            jsPsych.progressBar.setProgress(progressCounter / totalProgressSteps);
+          }
         }
       });
     });
@@ -262,17 +276,22 @@ blockOrder.forEach(blockKey => {
 
           const checkReady = () => {
             if (done1 && done2) {
-              instr.innerHTML = "You may now answer the questions. Press 1 for Audio 1 or 2 for Audio 2.";
+              instr.innerHTML = "Press 1 for Audio 1 or 2 for Audio 2.";
               showNextQuestion();
             }
           };
 
           a1.addEventListener("ended", () => { done1 = true; checkReady(); });
           a2.addEventListener("ended", () => { done2 = true; checkReady(); });
+        },
+        on_finish: () => {
+          progressCounter++;
+          jsPsych.progressBar.setProgress(progressCounter / totalProgressSteps);
         }
       });
     });
   });
+
   timeline.push(...jsPsych.randomization.shuffle(audioTrials));
 
   timeline.push(createEndOfBlockScreen(blockKey));
