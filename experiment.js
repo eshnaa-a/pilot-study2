@@ -51,12 +51,62 @@ const consent = {
 
 const instructions = {
   type: jsPsychHtmlKeyboardResponse,
-  stimulus: `<p>The study will proceed in 3 blocks. In each block you will first see pairs of images followed by 4 questions for each pair. Then, you will see pairs of audios followed by 4 questions for each pair.</p>
-    <p>Use keys 1 or 2 to respond. Press SPACE to begin the experiment.</p>`,
+  stimulus: `
+    <h2>Welcome to the experiment</h2>
+    <p>In this study, you will complete a series of tasks involving <strong>images</strong> and <strong>audio clips</strong>.</p>
+    <p><strong>There will be 3 blocks in total.</strong> In each block, you'll first see image pairs and answer 4 questions about each pair, followed by audio pairs with 4 questions per pair.</p>
+    <p><strong>You will use the number keys (1 or 2)</strong> to respond.</p>
+    <p>Before you being, please ensure you're in a quiet space.</p>
+    <p><em>Press the spacebar to view examples of the image and audio pairs before you begin the actual experiment.</em></p>
+  `,
   choices: [' ']
 };
 
-let timeline = [consent, instructions];
+const exampleImageTrial = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
+    <h3>Image Pair Example</h3>
+    <p><em>Note: The following example images and questions are not part of the actual experiment. They are included only to illustrate how stimuli will be presented.</em></p>
+    <p>In the actual study, you will see different image pairs, followed by 5 different questions.</p>
+    <div style='display:flex; justify-content:space-around;'>
+      <div style='text-align: center;'>
+        <p><strong>Image 1</strong></p>
+        <img src='all_images/example1.png' height='200'>
+      </div>
+      <div style='text-align: center;'>
+        <p><strong>Image 2</strong></p>
+        <img src='all_images/example2.png' height='200'>
+      </div>
+    </div>
+    <p><strong>Example question:</strong> Which image has a dog?</p>
+    <p>Press SPACE to continue.</p>
+  `,
+  choices: [' ']
+};
+
+const exampleAudioTrial = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
+    <h3>Audio Pair Example</h3>
+    <p><em>Note: The following example audios and questions are not part of the actual experiment. They are included only to illustrate how stimuli will be presented.</em></p>
+    <p>In the actual study, you will hear different audio pairs, followed by 6 different questions.</p>
+    <div style="display: flex; justify-content: center; gap: 50px;">
+      <div style='text-align:center;'>
+        <p><strong>Audio 1</strong></p>
+        <audio controls><source src="all_audios/example1.wav" type="audio/wav"></audio>
+      </div>
+      <div style='text-align:center;'>
+        <p><strong>Audio 2</strong></p>
+        <audio controls><source src="all_audios/example2.wav" type="audio/wav"></audio>
+      </div>
+    </div>
+    <p><strong>Example question:</strong> Which speaker is talking faster?</p>
+    <p>Press SPACE to continue.</p>
+  `,
+  choices: [' ']
+};
+
+let timeline = [consent, instructions, exampleImageTrial, exampleAudioTrial];
 
 blockOrder.forEach(blockKey => {
   const faceNums = imageBlocks[blockKey];
