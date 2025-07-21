@@ -19,12 +19,23 @@ const imageBlocks = { a: [1, 2, 3], b: [4, 5, 6], c: [7, 8, 9, 10] };
 const audioBlocks = { a: [1, 2, 3, 4, 5, 6], b: [7, 8, 9, 10, 11, 12, 13], c: [14, 15, 16, 17, 18, 19, 20] };
 const facePairs = [[1, 2], [3, 1], [2, 3], [4, 5], [6, 4], [5, 6]];
 const audioPairs = [[1, 2], [1, 3], [2, 3]];
-const questions = [
-  "1. Who do you think is more dominant?",
-  "2. Who do you think is more trustworthy?",
-  "3. Who do you think is more honest?",
-  "4. Who do you think is taller?"
+const imageQuestions = [
+  "Who looks more dominant?",
+  "Who looks more trustworthy?",
+  "Who looks more honest?",
+  "Who looks taller?",
+  "Which image do you find more attractive?"
 ];
+
+const audioQuestions = [
+  "Who sounds more dominant?",
+  "Who sounds more trustworthy?",
+  "Who sounds more honest?",
+  "Who sounds taller?",
+  "Which voice do you prefer?",
+  "Do these voices sound robotic? (1 = Yes, 2 = No)"
+];
+
 
 const consent = {
   type: jsPsychHtmlKeyboardResponse,
@@ -62,15 +73,21 @@ blockOrder.forEach(blockKey => {
   });
 
   jsPsych.randomization.shuffle(imageComparisons).forEach(({ img1, img2, face_number }) => {
-    questions.forEach((question, index) => {
+    imageQuestions.forEach((question, index) => {
       timeline.push({
         type: jsPsychHtmlKeyboardResponse,
         stimulus: `
           <p style='font-size:12px;'>BLOCK: ${blockKey.toUpperCase()} (Image)</p>
           <p><b>Review both images and answer the question below:</b></p>
-          <div style='display:flex; justify-content:space-around;'>
+	  <div style='display:flex; justify-content:space-around; align-items: center;'>
+           <div style='text-align: center;'>
+            <p><strong>Image 1</strong></p>
             <img src='all_images/${img1}' height='200'>
+           </div>
+           <div style='text-align: center;'>
+            <p><strong>Image 2</strong></p>
             <img src='all_images/${img2}' height='200'>
+           </div>
           </div>
           <p><strong>${question}</strong></p>
           <p>Press 1 for the left image or 2 for the right image.</p>
@@ -122,12 +139,12 @@ blockOrder.forEach(blockKey => {
           let responses = [];
 
           const showNextQuestion = () => {
-            if (currentQ < questions.length) {
-              box.innerHTML = `<p><strong>${questions[currentQ]}</strong></p><p>Press 1 or 2</p>`;
+            if (currentQ < audioQuestions.length) {
+              box.innerHTML = `<p><strong>${audioQuestions[currentQ]}</strong></p><p>Press 1 or 2</p>`;
               jsPsych.pluginAPI.getKeyboardResponse({
                 callback_function: info => {
                   responses.push({
-                    question: questions[currentQ],
+                    question: audioQuestions[currentQ],
                     response: info.key,
                     rt: info.rt
                   });
