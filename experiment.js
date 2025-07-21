@@ -1,4 +1,6 @@
 const jsPsych = initJsPsych({
+  show_progress_bar: true,
+  auto_update_progress_bar: true,
   on_data_update: () => {
     fetch("https://script.google.com/macros/s/AKfycbz2P_LTypos__22szkVspBsprpYj-lTIcy9lfNNtauVWDxZle2SytAo8vbGwfLatvn9/exec", {
       method: "POST",
