@@ -93,6 +93,7 @@ const exampleImageTrial = {
       </div>
     </div>
     <p><strong>Example question:</strong> Which image has a dog?</p>
+    <p><em>You would press 1 for Image 1 or 2 for Image 2 in the real study.</em></p>
     <p>Press SPACE to continue.</p>
   `,
   choices: [' ']
@@ -115,6 +116,7 @@ const exampleAudioTrial = {
       </div>
     </div>
     <p><strong>Example question:</strong> Which speaker is talking faster?</p>
+    <p><em>You would press 1 for Audio 1 or 2 for Audio 2 in the real study.</em></p>
     <p>Press SPACE to continue.</p>
   `,
   choices: [' ']
