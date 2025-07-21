@@ -122,8 +122,6 @@ const exampleAudioTrial = {
   choices: [' ']
 };
 
-let timeline = [consent, instructions, exampleImageTrial, exampleAudioTrial];
-
 const preExperimentInstructions = {
   type: jsPsychHtmlKeyboardResponse,
   stimulus: `
@@ -134,6 +132,8 @@ const preExperimentInstructions = {
   `,
   choices: [' ']
 };
+
+let timeline = [consent, instructions, exampleImageTrial, exampleAudioTrial, preExperimentInstructions];
 
 blockOrder.forEach(blockKey => {
   const faceNums = imageBlocks[blockKey];
