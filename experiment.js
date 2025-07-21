@@ -119,15 +119,28 @@ blockOrder.forEach(blockKey => {
         stimulus: `
           <div style="text-align:center;">
             <p style="font-size:12px;">BLOCK: ${blockKey.toUpperCase()} (Audio)</p>
-            <p><strong>Please play both audios and listen carefully. Questions will appear below after both are played. You will answer 4 questions for each pair of audios</strong></p>
+            <p><strong>Please listen to each audio recording carefully. You will answer 4 questions about the audio pairs after they finish playing.</strong></p>
+
             <div style="display: flex; justify-content: center; gap: 50px;">
-              <audio id="audio1" controls><source src="${audio1File}" type="audio/wav"></audio>
-              <audio id="audio2" controls><source src="${audio2File}" type="audio/wav"></audio>
+             <div style="text-align: center;">
+              <p><strong>Audio 1</strong></p>
+              <audio id="audio1" controls>
+               <source src="${audio1File}" type="audio/wav">
+              </audio>
+             </div>
+             <div style="text-align: center;">
+              <p><strong>Audio 2</strong></p>
+              <audio id="audio2" controls>
+               <source src="${audio2File}" type="audio/wav">
+              </audio>
+             </div>
             </div>
+
             <div id="question-box" style="margin-top:30px;"></div>
             <p id="instructions" style="margin-top:20px;"></p>
-          </div>
-        `,
+           </div>
+         `,
+
         choices: "NO_KEYS",
         on_load: () => {
           const a1 = document.getElementById("audio1");
