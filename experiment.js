@@ -1,6 +1,6 @@
 const jsPsych = initJsPsych({
   show_progress_bar: true,
-  auto_update_progress_bar: false,
+  auto_update_progress_bar: true,
   on_data_update: () => {
     fetch("https://script.google.com/macros/s/AKfycbz2P_LTypos__22szkVspBsprpYj-lTIcy9lfNNtauVWDxZle2SytAo8vbGwfLatvn9/exec", {
       method: "POST",
@@ -120,6 +120,8 @@ const exampleAudioTrial = {
   choices: [' ']
 };
 
+let timeline = [consent, instructions, exampleImageTrial, exampleAudioTrial];
+
 const preExperimentInstructions = {
   type: jsPsychHtmlKeyboardResponse,
   stimulus: `
@@ -130,16 +132,6 @@ const preExperimentInstructions = {
   `,
   choices: [' ']
 };
-
-const totalImagePairs = Object.values(imageBlocks).reduce((sum, arr) => sum + arr.length * facePairs.length, 0);
-
-const totalAudioTrials = Object.values(audioBlocks).reduce((sum, arr) => sum + arr.length * audioPairs.length, 0);
-
-const totalProgressSteps = totalImagePairs + totalAudioTrials;
-
-let progressCounter = 0;
-
-let timeline = [consent, instructions, exampleImageTrial, exampleAudioTrial, preExperimentInstructions];
 
 blockOrder.forEach(blockKey => {
   const faceNums = imageBlocks[blockKey];
@@ -188,12 +180,6 @@ blockOrder.forEach(blockKey => {
           face_number: face_number,
           group: group,
           block: blockKey
-        },
-        on_finish: () => {
-          if(index === imageQuestions.length - 1){
-            progressCounter++;
-            console.log("Progress updated for image trial. ProgressCounter:", progressCounter);
-            jsPsych.setProgressBar(progressCounter / totalProgressSteps);
           }
         }
       });
@@ -284,11 +270,6 @@ blockOrder.forEach(blockKey => {
 
           a1.addEventListener("ended", () => { done1 = true; checkReady(); });
           a2.addEventListener("ended", () => { done2 = true; checkReady(); });
-        },
-        on_finish: () => {
-          progressCounter++;
-          console.log("Progress updated for audio trial. ProgressCounter:", progressCounter);
-          jsPsych.setProgressBar(progressCounter / totalProgressSteps);
         }
       });
     });
