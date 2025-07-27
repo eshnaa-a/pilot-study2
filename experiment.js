@@ -59,7 +59,7 @@ const instructions = {
     <p>In this study, you will complete a series of tasks involving <strong>images</strong> and <strong>audio clips</strong>.</p>
     <p>There will be 3 blocks in total, Blocks A, B, and C (presented randomly). In each block, you'll first see image pairs and answer 5 questions about each pair, followed by audio pairs with 6 questions per pair.</p>
     <p>You will use the number keys (1 or 2) to respond.</p>
-    <p>Before you begin, please ensure you're in a quiet space.</p>
+    <p>This experiment will take approximately 45 minutes to complete. Before you begin, please ensure you're in a quiet space.</p>
     <p>If you wish to stop at any point, simply close this page and your data will not be recorded.</p>
     <p><em>Press the spacebar to view examples of the image and audio pairs before you begin the actual experiment.</em></p>
   `,
@@ -117,6 +117,7 @@ const preExperimentInstructions = {
   stimulus: `
     <p>You will now start the actual experiment.</p>
     <p>Remember to use the number keys (1 or 2) to respond to each question.</p>
+    <p>Each block will take approximately 15 minutes to complete.</p>
     <p>Make sure you're in a quiet space and give each question your full attention.</p>
     <p><strong>Press the spacebar to begin the first block.</strong></p>
   `,
