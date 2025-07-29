@@ -49,7 +49,7 @@ const audioQuestions = [
   "Who sounds more honest?",
   "Who sounds taller?",
   "Which voice do you prefer?",
-  "Do these voices sound human to you? (1 = Yes, 2 = No)"
+  "Do these voices sound more human or robotic to you (1 = Human, 2 = Robotic)"
 ];
 
 const instructions = {
