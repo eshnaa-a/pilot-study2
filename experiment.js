@@ -269,7 +269,9 @@ blockOrder.forEach(blockKey => {
 
   timeline.push(...jsPsych.randomization.shuffle(audioTrials));
 
-  timeline.push(createEndOfBlockScreen(blockKey));
+  if (blockKey !== blockOrder[blockOrder.length - 1]) {
+    timeline.push(createEndOfBlockScreen(blockKey));
+  }
 });
 
 timeline.push({
