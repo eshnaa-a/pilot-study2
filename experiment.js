@@ -1,13 +1,29 @@
 const jsPsych = initJsPsych({
   show_progress_bar: true,
   auto_update_progress_bar: true,
-  on_data_update: () => {
-    fetch("https://script.google.com/macros/s/AKfycbz2P_LTypos__22szkVspBsprpYj-lTIcy9lfNNtauVWDxZle2SytAo8vbGwfLatvn9/exec", {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(jsPsych.data.get().values())
+  on_finish: function() {
+    const rawData = jsPsych.data.get().values();
+    const participantID = rawData[0]?.participantID || "unknown";
+
+    const formattedData = rawData.map(trial => {
+      const isImage = trial.modality === "image";
+      const isAudio = trial.modality === "audio";
+
+      return {
+        ParticipantID: trial.participantID || "unknown",
+        Group: trial.group || "unknown",
+        Block: trial.block || "",
+        LeftStimulus: isImage ? trial.image_left : (isAudio ? trial.audio_left : ""),
+        RightStimulus: isImage ? trial.image_right : (isAudio ? trial.audio_right : ""),
+        Question: trial.question || (trial.responses ? trial.responses.map(r => r.question).join(" | ") : ""),
+        Response: trial.response || (trial.responses ? trial.responses.map(r => r.response).join(" | ") : ""),
+        ReactionTime: trial.rt || (trial.responses ? trial.responses.map(r => r.rt).join(" | ") : ""),
+
+        BreakDuration: trial.break_duration || ""
+      };
     });
+
+    database.ref(`participants/${participantID}/finalData`).set(formattedData);
   }
 });
 
