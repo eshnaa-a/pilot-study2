@@ -211,13 +211,13 @@ blockOrder.forEach(blockKey => {
                         <div style="display: flex; justify-content: center; gap: 50px;">
                               <div style="text-align: center;">
                                     <p><strong>Audio 1</strong></p>
-                                    <audio id="audio1" controls>
+                                    <audio id="audio1" controls controlsList="noplaybackrate">
                                           <source src="${audio1File}" type="audio/wav">
                                     </audio>
                               </div>
                               <div style="text-align: center;">
                                     <p><strong>Audio 2</strong></p>
-                                    <audio id="audio2" controls>
+                                    <audio id="audio2" controls controlsList="noplaybackrate">
                                           <source src="${audio2File}" type="audio/wav">
                                     </audio>
                               </div>
