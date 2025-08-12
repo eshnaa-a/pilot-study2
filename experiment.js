@@ -114,18 +114,26 @@ const exampleAudioTrial = {
     <div style="display: flex; justify-content: center; gap: 50px;">
       <div style='text-align:center;'>
         <p><strong>Audio 1</strong></p>
-        <audio controls><source src="all_audios/example1.wav" type="audio/wav"></audio>
+        <audio id="example1" controls controlsList="nodownload noplaybackrate">
+          <source src="all_audios/example1.wav" type="audio/wav">
+        </audio>
       </div>
       <div style='text-align:center;'>
         <p><strong>Audio 2</strong></p>
-        <audio controls><source src="all_audios/example2.wav" type="audio/wav"></audio>
+        <audio id="example2" controls controlsList="nodownload noplaybackrate">
+          <source src="all_audios/example2.wav" type="audio/wav">
+        </audio>
       </div>
     </div>
     <p><strong>Example question:</strong> Which speaker is talking faster?</p>
     <p><em>You would press 1 for Audio 1 or 2 for Audio 2 in the real study.</em></p>
     <p>Press SPACE to continue.</p>
   `,
-  choices: [' ']
+  choices: [' '],
+  on_load: () => {
+    document.getElementById("example1").playbackRate = 1.0;
+    document.getElementById("example2").playbackRate = 1.0;
+  }
 };
 
 const preExperimentInstructions = {
