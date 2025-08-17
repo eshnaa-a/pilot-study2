@@ -359,9 +359,9 @@ blockOrder.forEach(blockKey => {
                       a2.disabled = true;
                       if (!questionsStarted) {
                         questionsStarted = true;
+                        showNextQuestion();
                         a1.disabled = false;
                         a2.disabled = false;
-                        showNextQuestion();
                       }
                   }, {once: true});
         }
