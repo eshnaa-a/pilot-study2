@@ -1,7 +1,7 @@
 var style = document.createElement('style');
 style.innerHTML = `
   body {
-    font-size: 20px;
+    font-size: 23px;
   }
 `;
 document.head.appendChild(style);
