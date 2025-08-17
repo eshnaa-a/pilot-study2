@@ -310,13 +310,18 @@ blockOrder.forEach(blockKey => {
                   let responses = [];
                   let questionsStarted = false; // prevents double start
 
-                  a2.disabled = true;
+                  a2.addEventListener("play", () => {
+                    if (!done1) {
+                      a2.pause();
+                      a2.currentTime = 0;
+                      alert("You must play Audio 1 first.");
+                    }
+                  });
 
                   a1.addEventListener("ended", () => {
-                      done1 = true;
-                      a2.disabled = false;
-                      a1.disabled = true;
-                  }, {once: true});
+                    done1 = true;
+                    a2.disabled = false;
+                  });
 
                   const showNextQuestion = () => {
                         // clear any old keyboard listeners
@@ -356,7 +361,6 @@ blockOrder.forEach(blockKey => {
 
                   a2.addEventListener("ended", () => {
                       done2 = true;
-                      a2.disabled = true;
                       if (!questionsStarted) {
                         questionsStarted = true;
                         showNextQuestion();
