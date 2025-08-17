@@ -309,6 +309,20 @@ blockOrder.forEach(blockKey => {
                   let responses = [];
                   let questionsStarted = false; // prevents double start
 
+                  a2.disabled = true;
+
+
+                  a1.addEventListener("play", () => {
+                      // pause the other audio if it starts
+                      if (!a2.paused) a2.pause();
+                  });
+
+                  a2.addEventListener("play", () => {
+                      // pause the first audio if it starts
+                      if (!a1.paused) a1.pause();
+                  });
+
+
                   const showNextQuestion = () => {
                         // clear any old keyboard listeners
                         jsPsych.pluginAPI.cancelAllKeyboardResponses();
@@ -353,7 +367,11 @@ blockOrder.forEach(blockKey => {
                   };
 
                   // Listen for audio completion
-                  a1.addEventListener("ended", () => { done1 = true; checkReady(); }, { once: true });
+                  a1.addEventListener("ended", () => { 
+                    done1 = true;
+                    a2.disabled = false; 
+                    checkReady(); 
+                  }, { once: true });
                   a2.addEventListener("ended", () => { done2 = true; checkReady(); }, { once: true });
             }
       });
