@@ -364,6 +364,7 @@ blockOrder.forEach(blockKey => {
                         showNextQuestion();
                       }
                   }, {once: true});
+        }
       });
     });
   });
