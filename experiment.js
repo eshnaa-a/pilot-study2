@@ -304,31 +304,27 @@ blockOrder.forEach(blockKey => {
                   const box = document.getElementById("question-box");
                   const instr = document.getElementById("instructions");
 
-                  let done1 = false, done2 = false;
+                  let done1 = false;
+                  let done2 = false;
                   let currentQ = 0;
                   let responses = [];
                   let questionsStarted = false; // prevents double start
 
                   a2.disabled = true;
 
-
-                  a1.addEventListener("play", () => {
-                      // pause the other audio if it starts
-                      if (!a2.paused) a2.pause();
-                  });
-
-                  a2.addEventListener("play", () => {
-                      // pause the first audio if it starts
-                      if (!a1.paused) a1.pause();
-                  });
-
+                  a1.addEventListener("ended", () => {
+                      done1 = true;
+                      a2.disabled = false;
+                      a1.disabled = true;
+                  }, {once: true});
 
                   const showNextQuestion = () => {
                         // clear any old keyboard listeners
                         jsPsych.pluginAPI.cancelAllKeyboardResponses();
 
                         if (currentQ < audioQuestions.length) {
-                              box.innerHTML = `<p><strong>${audioQuestions[currentQ]}</strong></p><p>Press 1 or 2</p>`;
+                              box.innerHTML = `<p><strong>${audioQuestions[currentQ]}</strong></p>
+                                               <p>Press 1 for Audio 1 or 2 for Audio 2</p>`;
                               jsPsych.pluginAPI.getKeyboardResponse({
                                     callback_function: info => {
                                           responses.push({
@@ -358,22 +354,16 @@ blockOrder.forEach(blockKey => {
                         }
                   };
 
-                  const checkReady = () => {
-                        if (done1 && done2 && !questionsStarted) {
-                              questionsStarted = true;
-                              instr.innerHTML = "Press 1 for Audio 1 or 2 for Audio 2.";
-                              showNextQuestion();
-                        }
-                  };
-
-                  // Listen for audio completion
-                  a1.addEventListener("ended", () => { 
-                    done1 = true;
-                    a2.disabled = false; 
-                    checkReady(); 
-                  }, { once: true });
-                  a2.addEventListener("ended", () => { done2 = true; checkReady(); }, { once: true });
-            }
+                  a2.addEventListener("ended", () => {
+                      done2 = true;
+                      a2.disabled = true;
+                      if (!questionsStarted) {
+                        questionsStarted = true;
+                        a1.disabled = false;
+                        a2.disabled = false;
+                        showNextQuestion();
+                      }
+                  }, {once: true});
       });
     });
   });
