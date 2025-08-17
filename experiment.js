@@ -1,14 +1,28 @@
+const firebaseConfig = {
+  apiKey: "AIzaSyCfcJieihGrW2FYOBYLsNp7FaFl2itYJbE",
+  authDomain: "pilot-study-1.firebaseapp.com",
+  databaseURL: "https://pilot-study-1-default-rtdb.firebaseio.com",
+  projectId: "pilot-study-1",
+  storageBucket: "pilot-study-1.firebasestorage.app",
+  messagingSenderId: "41340007588",
+  appId: "1:41340007588:web:6e6206d869ac2f4f30a231"
+};
+
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
 const jsPsych = initJsPsych({
   show_progress_bar: true,
   auto_update_progress_bar: true,
-  on_finish: function() {
+
+  // runs once at the very end
+  on_finish: function () {
     const rawData = jsPsych.data.get().values();
     const participantID = rawData[0]?.participantID || "unknown";
 
     const formattedData = rawData.map(trial => {
       const isImage = trial.modality === "image";
       const isAudio = trial.modality === "audio";
-
       return {
         ParticipantID: trial.participantID || "unknown",
         Group: trial.group || "unknown",
@@ -18,12 +32,49 @@ const jsPsych = initJsPsych({
         Question: trial.question || (trial.responses ? trial.responses.map(r => r.question).join(" | ") : ""),
         Response: trial.response || (trial.responses ? trial.responses.map(r => r.response).join(" | ") : ""),
         ReactionTime: trial.rt || (trial.responses ? trial.responses.map(r => r.rt).join(" | ") : ""),
-
         BreakDuration: trial.break_duration || ""
       };
     });
 
     database.ref(`participants/${participantID}/finalData`).set(formattedData);
+  },
+
+  // runs after EVERY trial finishes
+  on_trial_finish: function (data) {
+    const pid = jsPsych.data.get().values()[0]?.participantID || "unknown";
+
+    // Audio trials: log each question separately
+    if (data.modality === "audio" && Array.isArray(data.responses)) {
+      data.responses.forEach(r => {
+        database.ref(`participants/${pid}/trials`).push({
+          ParticipantID: pid,
+          Group: data.group || "unknown",
+          Block: data.block || "",
+          Modality: "audio",
+          LeftStimulus: data.audio_left || "",
+          RightStimulus: data.audio_right || "",
+          Question: r.question || "",
+          Response: r.response ?? "",
+          ReactionTime: r.rt ?? "",
+          timestamp: Date.now()
+        }).catch(e => console.error("[firebase] push failed:", e));
+      });
+      return;
+    }
+
+    // All other trials (image, breaks, etc.)
+    database.ref(`participants/${pid}/trials`).push({
+      ParticipantID: pid,
+      Group: data.group || "unknown",
+      Block: data.block || "",
+      Modality: data.modality || "",
+      LeftStimulus: data.image_left || data.audio_left || "",
+      RightStimulus: data.image_right || data.audio_right || "",
+      Question: data.question || "",
+      Response: data.response ?? "",
+      ReactionTime: data.rt ?? "",
+      timestamp: Date.now()
+    }).catch(e => console.error("[firebase] push failed:", e));
   }
 });
 
@@ -76,7 +127,7 @@ const instructions = {
     <p>There will be 3 blocks in total, Blocks A, B, and C (presented randomly). In each block, you'll first see image pairs and answer 5 questions about each pair, followed by audio pairs with 6 questions per pair. You may listen to the audio clips using either headphones or your computer speaker.</p>
     <p>You will use the number keys (1 or 2) to respond.</p>
     <p>This experiment will take approximately 45 minutes to complete. Before you begin, please ensure you're in a quiet space and have a strong Wi-Fi connection.</p>
-    <p>If you wish to stop at any point, simply close this tab and your data will not be recorded.</p>
+    <p>If you wish to stop at any point, simply close this page and your data will not be recorded.</p>
     <p><em>Press the spacebar to view examples of the image and audio pairs before you begin the actual experiment.</em></p>
   `,
   choices: [' ']
@@ -86,7 +137,7 @@ const exampleImageTrial = {
   type: jsPsychHtmlKeyboardResponse,
   stimulus: `
     <h3>Image Pair Example</h3>
-    <p><em>Note: The following example images and questions are not part of the actual experiment. They are included only to illustrate how stimuli will be presented. The images may take a few seconds to load.</em></p>
+    <p><em>Note: The following example images and questions are not part of the actual experiment. They are included only to illustrate how stimuli will be presented.</em></p>
     <p>In the actual study, you will see different image pairs, followed by 5 different questions.</p>
     <div style='display:flex; justify-content:space-around;'>
       <div style='text-align: center;'>
@@ -174,7 +225,6 @@ blockOrder.forEach(blockKey => {
         stimulus: `
           <p style='font-size:12px;'>BLOCK: ${blockKey.toUpperCase()} (Image)</p>
           <p><b>Please review both images and answer the question below:</b></p>
-          <p style='color: black; font-size: 14px;'><i>The images may take a few seconds to load.</i></p>
 	  <div style='display:flex; justify-content:space-around; align-items: center;'>
            <div style='text-align: center;'>
             <p><strong>Image 1</strong></p>
