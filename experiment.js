@@ -1,3 +1,11 @@
+var style = document.createElement('style');
+style.innerHTML = `
+  body {
+    font-size: 20px;
+  }
+`;
+document.head.appendChild(style);
+
 const firebaseConfig = {
   apiKey: "AIzaSyCfcJieihGrW2FYOBYLsNp7FaFl2itYJbE",
   authDomain: "pilot-study-1.firebaseapp.com",
@@ -127,7 +135,7 @@ const instructions = {
     <p>There will be 3 blocks in total, Blocks A, B, and C (presented randomly). In each block, you'll first see image pairs and answer 5 questions about each pair, followed by audio pairs with 6 questions per pair. You may listen to the audio clips using either headphones or your computer speaker.</p>
     <p>You will use the number keys (1 or 2) to respond.</p>
     <p>This experiment will take approximately 45 minutes to complete. Before you begin, please ensure you're in a quiet space and have a strong Wi-Fi connection.</p>
-    <p>If you wish to stop at any point, simply close this page and your data will not be recorded.</p>
+    <p>If you wish to stop at any point, simply close this tab and your data will not be recorded.</p>
     <p><em>Press the spacebar to view examples of the image and audio pairs before you begin the actual experiment.</em></p>
   `,
   choices: [' ']
@@ -139,6 +147,7 @@ const exampleImageTrial = {
     <h3>Image Pair Example</h3>
     <p><em>Note: The following example images and questions are not part of the actual experiment. They are included only to illustrate how stimuli will be presented.</em></p>
     <p>In the actual study, you will see different image pairs, followed by 5 different questions.</p>
+    <p><em>Both images may take a few seconds to load.</em></p>
     <div style='display:flex; justify-content:space-around;'>
       <div style='text-align: center;'>
         <p><strong>Image 1</strong></p>
@@ -225,6 +234,7 @@ blockOrder.forEach(blockKey => {
         stimulus: `
           <p style='font-size:12px;'>BLOCK: ${blockKey.toUpperCase()} (Image)</p>
           <p><b>Please review both images and answer the question below:</b></p>
+          <p><em>Both images may take a few seconds to load.</em></p>
 	  <div style='display:flex; justify-content:space-around; align-items: center;'>
            <div style='text-align: center;'>
             <p><strong>Image 1</strong></p>
