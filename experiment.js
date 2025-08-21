@@ -19,18 +19,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// Add custom CSS for progress bar
-const style = document.createElement('style');
-style.innerHTML = `
-  .jspsych-progressbar-container {
-    height: 20px !important;
-  }
-  .jspsych-progressbar-inner {
-    height: 100% !important;
-  }
-`;
-document.head.appendChild(style);
-
 const jsPsych = initJsPsych({
   show_progress_bar: true,
   auto_update_progress_bar: true,
